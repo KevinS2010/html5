@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="node_modules/angular/angular.js"></script>
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
+        <script>
+            //PRIMERO GENERAMOS UN MODULO
+            angular.module("primero",[])
+                    .controller("pelicula",function($scope,$http){
+                        //estamos en productos
+                $scope.nombre;
+                $scope.genero;
+                $scope.clasificacion;
+                $scope.id;
+                $scope.peliculas=[];
+                $http.get('http://localhost:9999/pelicula').success(function(json){
+                    $scope.peliculas=json;
+                });
+                
+                //lA REFERENCIA $HTTP SIRVE PARA COMUNICARNOS CON EL SERVICIO WEB POR MEDIO DE SU URI
+                $scope.buscar=function(){
+                $http.get('http://localhost:9999/pelicula').success(function(json){  //json puede ser otro ombre
+                    $scope.nombre=json[$scope.id].nombre;
+                    $scope.genero=json[$scope.id].genero;
+                    $scope.clasificacion=json[$scope.id].clasificacion;
+                    
+                });
+            }
+            //metodo para guardar
+            $scope.miNombre;
+            $scope.miGenero;
+            $scope.miClasificacion;
+            
+            $scope.guardar=function(){
+                $http.post('http://localhost:9999/pelicula/'+$scope.miNombre+'/'+$scope.miGenero+'/'+$scope.miClasificacion).success(function(datos) {
+                    
+                        $scope.estatusMensaje=datos;
+                    
+                        
+                    });
+                }
+                    }).controller("empleado",function($scope,$http){ // }).controller("usuarios",function($scope,$http){
+                        //DEclaramos las variables que seran pasadas al 
+                        //servicio id_departamento y nombre del empleado 
+                        $scope.id_departamento;
+                        $scope.nombre;
+                        $scope.mensaje;
+                        //invocamos el servicio 
+                        $scope.guardarempleado=function(){//activar el boton
+                          $http.post('http://localhost:9999/empleado/'+$scope.id_departamento+'/'+$scope.nombre).success(function(datos){
+                         $scope.mensaje=datos;
+                        });    
+                        }
+                        
+                        
+                });
+        </script>
+        
+    </head>
+    <body ng-app="primero">
+        <div ng-controller="pelicula">
+          
+            <input ng-model="id" type="text" placeholder="escribe el id">
+            <button ng-click="buscar()">Buscar por id</button>
+            <br>
+            {{nombre}}</br>
+            {{genero}}</br>
+            {{clasificacion}}</br>
+            
+            
+            <h2>Formulario para guardar una pelicula</h2>
+            <input type="text" ng-model="miNombre" placeholder="Introduce nombre de pelicula">
+            <input type="text" ng-model="miGenero" placeholder="introduce el genero">
+            <input type="text" ng-model="miClasificacion" placeholder="Introduce la clasificacion">
+            <button ng-click="guardar()"> Guardar pelicula</button>            
+            <div>{{estatusMensaje}}</div>
+            
+            
+            <h2> Buscar todos los registros</h2>
+            <table class="table table-bordered table-striped">  
+                <tr class="success">
+                    <th>Nombre de la pelicula</th>
+                    <th>Genero de  la pelicula</th>
+                    <th>Clasificacion de la pelicula</th>
+                </tr>
+                <tr ng-repeat="pelicula in peliculas">
+                    <td>{{pelicula.nombre}}</td>
+                    <td>{{pelicula.genero}}</td>
+                    <td>{{pelicula.clasificacion}}</td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        <div ng-controller="empleado">
+            <input ng-model="id_departamento" type="text" placeholder="introduce el id depto"/>         
+            <input type="text" ng-model="nombre" placeholder="nombre del empleado"/>
+            <button ng-click="guardarempleado()">Guardar empleado</button>
+            <br>
+            {{mensaje}}
+        </div>
+        
+        
+        <br/>
+        <br/>
+        <br/>
+        <div class="item">
+            <img src="pelicula.jpg" alt="500">
+         <div class="carousel-caption">
+    
+         </div>
+    </div>
+    </body>
+</html>
